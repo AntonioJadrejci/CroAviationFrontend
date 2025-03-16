@@ -1,0 +1,31 @@
+# Ignoriraj node_modules
+node_modules/
+
+# Ignoriraj dependency lock fileove
+package-lock.json
+yarn.lock
+
+# Ignoriraj cache
+.cache/
+.temp/
+.tmp/
+
+# Ignoriraj IDE specifične fileove
+.vscode/
+.idea/
+
+# Ignoriraj build artefakte
+dist/
+build/
+
+# Ignoriraj logove
+*.log
+logs/
+
+# Ignoriraj environment varijable
+.env
+.env.local
+
+# Ignoriraj OS specifične fileove
+.DS_Store
+Thumbs.db

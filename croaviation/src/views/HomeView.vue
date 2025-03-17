@@ -1,22 +1,26 @@
 <template>
-  <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
+  <v-container fluid class="bg-black fill-height">
+    <v-row align="center" justify="center" class="fill-height">
+      <!-- Lijeva polovica (sadržaj) -->
+      <v-col cols="12" md="6" class="text-center">
         <v-img
           :src="require('../assets/CroLogo.png')"
           class="my-3"
           contain
           height="200"
+          @click="goToHome"
+          style="cursor: pointer"
         />
-      </v-col>
 
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">Welcome to Vuetify</h1>
+        <h1 class="display-2 font-weight-bold mb-3 white--text">Welcome</h1>
 
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
+        <p class="subheading font-weight-regular white--text">
+          For help and collaboration with other developers,
           <br />please join our online
-          <a href="https://community.vuetifyjs.com" target="_blank"
+          <a
+            href="https://community.vuetifyjs.com"
+            target="_blank"
+            class="white--text"
             >Discord Community</a
           >
         </p>
@@ -27,52 +31,9 @@
         </v-alert>
       </v-col>
 
-      <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-3">What's next?</h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-3">Important Links</h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-3">Ecosystem</h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
+      <!-- Desna polovica (slika) -->
+      <v-col cols="12" md="6" class="text-center">
+        <v-img :src="require('../assets/hr.png')" contain height="500" />
       </v-col>
     </v-row>
   </v-container>
@@ -85,63 +46,26 @@ export default {
   name: "HomeView",
 
   data: () => ({
-    ecosystem: [
-      {
-        text: "vuetify-loader",
-        href: "https://github.com/vuetifyjs/vuetify-loader",
-      },
-      {
-        text: "github",
-        href: "https://github.com/vuetifyjs/vuetify",
-      },
-      {
-        text: "awesome-vuetify",
-        href: "https://github.com/vuetifyjs/awesome-vuetify",
-      },
-    ],
-    importantLinks: [
-      {
-        text: "Documentation",
-        href: "https://vuetifyjs.com",
-      },
-      {
-        text: "Chat",
-        href: "https://community.vuetifyjs.com",
-      },
-      {
-        text: "Made with Vuetify",
-        href: "https://madewithvuejs.com/vuetify",
-      },
-      {
-        text: "Twitter",
-        href: "https://twitter.com/vuetifyjs",
-      },
-      {
-        text: "Articles",
-        href: "https://medium.com/vuetify",
-      },
-    ],
-    whatsNext: [
-      {
-        text: "Explore components",
-        href: "https://vuetifyjs.com/components/api-explorer",
-      },
-      {
-        text: "Select a layout",
-        href: "https://vuetifyjs.com/getting-started/pre-made-layouts",
-      },
-      {
-        text: "Frequently Asked Questions",
-        href: "https://vuetifyjs.com/getting-started/frequently-asked-questions",
-      },
-    ],
     message: "", // Dodano za pohranu poruke s backenda
   }),
+
+  methods: {
+    // Metoda za navigaciju na homepage i osvježavanje stranice
+    goToHome() {
+      if (this.$route.path !== "/") {
+        // Ako korisnik nije na homepageu, navigiraj na homepage
+        this.$router.push("/");
+      } else {
+        // Ako je korisnik već na homepageu, osvježi stranicu
+        window.location.reload();
+      }
+    },
+  },
 
   async mounted() {
     try {
       // Slanje zahtjeva na backend
-      const response = await axios.get("/api/endpoint");
+      const response = await axios.get("http://localhost:3000/api/endpoint"); // Promijenjeno na puni URL
       this.message = response.data.message; // Postavi poruku s backenda
     } catch (error) {
       console.error("Došlo je do greške pri dohvatu podataka:", error);
@@ -150,3 +74,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Dodatni stilovi ako su potrebni */
+.bg-black {
+  background-color: black;
+}
+
+.white--text {
+  color: white;
+}
+
+.fill-height {
+  height: 100vh;
+}
+</style>

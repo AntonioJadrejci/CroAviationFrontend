@@ -29,12 +29,26 @@
         <!-- Lijeva polovica (sadržaj) -->
         <v-col cols="12" md="6" class="text-center">
           <!-- Gumb "AIRPORTS" -->
-          <v-btn color="purple" x-large class="mb-4" @click="goToAirports">
+          <v-btn
+            color="deep-purple darken-4"
+            x-large
+            block
+            class="mb-4 custom-button"
+            @click="goToAirports"
+          >
             AIRPORTS
           </v-btn>
 
           <!-- Gumb "ABOUT" -->
-          <v-btn color="purple" x-large @click="goToAbout"> ABOUT </v-btn>
+          <v-btn
+            color="deep-purple darken-4"
+            x-large
+            block
+            class="custom-button"
+            @click="goToAbout"
+          >
+            ABOUT
+          </v-btn>
 
           <!-- Dodano za prikaz poruke s backenda -->
           <v-alert v-if="message" type="success" class="mt-4">
@@ -117,5 +131,14 @@ export default {
 
 .fill-height {
   height: 100vh;
+}
+
+/* Custom stil za gumbove */
+.custom-button {
+  background-color: #4a148c !important; /* Boja #4A148C */
+  color: white !important; /* Bijeli tekst */
+  font-size: 1.5rem; /* Veći font */
+  padding: 24px 0; /* Veći padding */
+  margin: 8px 0; /* Razmak između gumbova */
 }
 </style>

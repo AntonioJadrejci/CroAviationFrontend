@@ -15,11 +15,12 @@
       <v-spacer></v-spacer>
       <!-- Razmak između loga i gumba -->
 
-      <!-- Gumb za prijavu u gornjem desnom kutu -->
-      <v-btn text @click="goToLogin">
-        <v-icon left>mdi-account-circle</v-icon>
-        <!-- Ikona profila -->
-        <span>Log in</span>
+      <!-- Gumb za prijavu/odjavu u gornjem desnom kutu -->
+      <v-btn text @click="handleAuth">
+        <v-icon left>{{
+          isLoggedIn ? "mdi-account-circle" : "mdi-login"
+        }}</v-icon>
+        <span>{{ isLoggedIn ? "Log out" : "Log in" }}</span>
       </v-btn>
     </v-app-bar>
 
@@ -57,7 +58,7 @@
             x-large
             block
             class="custom-button"
-            @click="goToAbout"
+            @click="showAbout = true"
           >
             ABOUT
           </v-btn>
@@ -74,6 +75,26 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <!-- ABOUT dialog -->
+    <v-dialog v-model="showAbout" max-width="600">
+      <v-card>
+        <v-card-title class="headline">About CroAviation</v-card-title>
+        <v-card-text>
+          Welcome to CroAviation – your guide to airports and airlines in
+          Croatia. Discover which airlines fly to each port, view aircraft
+          details including model, registration and route, and contribute by
+          adding new data. CroAviation is the perfect choice for all aviation
+          lovers!
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="deep-purple darken-4" text @click="showAbout = false"
+            >Close</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -86,6 +107,7 @@ export default {
   data: () => ({
     message: "", // Dodano za pohranu poruke s backenda
     isLoggedIn: false, // Stanje prijave korisnika
+    showAbout: false, // Kontrola prikaza ABOUT dialoga
   }),
 
   methods: {
@@ -100,21 +122,22 @@ export default {
       }
     },
 
-    // Metoda za navigaciju na stranicu za prijavu
-    goToLogin() {
-      this.$router.push("/login");
+    // Metoda za prijavu/odjavu
+    handleAuth() {
+      if (this.isLoggedIn) {
+        // Odjava korisnika
+        localStorage.removeItem("authToken");
+        this.isLoggedIn = false;
+      } else {
+        // Prijava korisnika
+        this.$router.push("/login");
+      }
     },
 
     // Metoda za navigaciju na stranicu "AIRPORTS"
     goToAirports() {
       console.log("Kliknuto na AIRPORTS");
       // Ovdje možete dodati logiku za navigaciju na stranicu "AIRPORTS"
-    },
-
-    // Metoda za navigaciju na stranicu "ABOUT"
-    goToAbout() {
-      console.log("Kliknuto na ABOUT");
-      // Ovdje možete dodati logiku za navigaciju na stranicu "ABOUT"
     },
 
     // Metoda za navigaciju na stranicu "PROFILE"

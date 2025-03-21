@@ -16,7 +16,7 @@
       <!-- Razmak između loga i gumba -->
 
       <!-- Gumb za prijavu u gornjem desnom kutu -->
-      <v-btn text @click="login">
+      <v-btn text @click="goToLogin">
         <v-icon left>mdi-account-circle</v-icon>
         <!-- Ikona profila -->
         <span>Log in</span>
@@ -37,6 +37,18 @@
             @click="goToAirports"
           >
             AIRPORTS
+          </v-btn>
+
+          <!-- Gumb "PROFILE" (prikazuje se samo ako je korisnik prijavljen) -->
+          <v-btn
+            v-if="isLoggedIn"
+            color="deep-purple darken-4"
+            x-large
+            block
+            class="mb-4 custom-button"
+            @click="goToProfile"
+          >
+            PROFILE
           </v-btn>
 
           <!-- Gumb "ABOUT" -->
@@ -73,6 +85,7 @@ export default {
 
   data: () => ({
     message: "", // Dodano za pohranu poruke s backenda
+    isLoggedIn: false, // Stanje prijave korisnika
   }),
 
   methods: {
@@ -87,10 +100,9 @@ export default {
       }
     },
 
-    // Metoda za prijavu
-    login() {
-      // Ovdje možete dodati logiku za prijavu (npr. preusmjeravanje na stranicu za prijavu)
-      console.log("Kliknuto na Log in");
+    // Metoda za navigaciju na stranicu za prijavu
+    goToLogin() {
+      this.$router.push("/login");
     },
 
     // Metoda za navigaciju na stranicu "AIRPORTS"
@@ -104,6 +116,12 @@ export default {
       console.log("Kliknuto na ABOUT");
       // Ovdje možete dodati logiku za navigaciju na stranicu "ABOUT"
     },
+
+    // Metoda za navigaciju na stranicu "PROFILE"
+    goToProfile() {
+      console.log("Kliknuto na PROFILE");
+      // Ovdje možete dodati logiku za navigaciju na stranicu "PROFILE"
+    },
   },
 
   async mounted() {
@@ -114,6 +132,12 @@ export default {
     } catch (error) {
       console.error("Došlo je do greške pri dohvatu podataka:", error);
       this.message = "Greška pri dohvatu podataka s backenda."; // Prikaži grešku korisniku
+    }
+
+    // Provjera da li je korisnik prijavljen
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      this.isLoggedIn = true;
     }
   },
 };

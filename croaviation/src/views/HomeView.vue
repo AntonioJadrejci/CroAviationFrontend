@@ -95,19 +95,42 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Login dialog -->
+    <LoginView
+      :showLogin="showLogin"
+      @close-login="showLogin = false"
+      @login-success="handleLoginSuccess"
+      @go-to-register="showRegister = true"
+    />
+
+    <!-- Register dialog -->
+    <RegisterView
+      :showRegister="showRegister"
+      @close-register="showRegister = false"
+      @register-success="handleRegisterSuccess"
+      @go-to-login="showLogin = true"
+    />
   </v-app>
 </template>
 
 <script>
 import axios from "axios";
+import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
 
 export default {
   name: "HomeView",
-
+  components: {
+    LoginView,
+    RegisterView,
+  },
   data: () => ({
     message: "", // Dodano za pohranu poruke s backenda
     isLoggedIn: false, // Stanje prijave korisnika
     showAbout: false, // Kontrola prikaza ABOUT dialoga
+    showLogin: false, // Kontrola prikaza Login dialoga
+    showRegister: false, // Kontrola prikaza Register dialoga
   }),
 
   methods: {
@@ -130,7 +153,7 @@ export default {
         this.isLoggedIn = false;
       } else {
         // Prijava korisnika
-        this.$router.push("/login");
+        this.showLogin = true;
       }
     },
 
@@ -144,6 +167,18 @@ export default {
     goToProfile() {
       console.log("Kliknuto na PROFILE");
       // Ovdje možete dodati logiku za navigaciju na stranicu "PROFILE"
+    },
+
+    // Metoda za rukovanje uspješnom prijavom
+    handleLoginSuccess() {
+      this.isLoggedIn = true;
+      this.showLogin = false;
+    },
+
+    // Metoda za rukovanje uspješnom registracijom
+    handleRegisterSuccess() {
+      this.isLoggedIn = true;
+      this.showRegister = false;
     },
   },
 

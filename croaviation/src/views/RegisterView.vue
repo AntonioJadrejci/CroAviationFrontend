@@ -1,8 +1,17 @@
 <template>
-  <v-overlay :value="true" z-index="100">
-    <v-card class="elevation-12">
+  <v-dialog
+    :value="showRegister"
+    max-width="600"
+    persistent
+    @input="closeRegister"
+  >
+    <v-card>
       <v-toolbar color="deep-purple darken-4" dark flat>
         <v-toolbar-title>Registracija</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="closeRegister">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-toolbar>
       <v-card-text>
         <v-form @submit.prevent="register">
@@ -33,13 +42,16 @@
         <v-btn text @click="goToLogin">Prijavi se</v-btn>
       </v-card-actions>
     </v-card>
-  </v-overlay>
+  </v-dialog>
 </template>
 
 <script>
 import axios from "axios";
 
 export default {
+  props: {
+    showRegister: Boolean,
+  },
   data() {
     return {
       username: "",
@@ -61,13 +73,17 @@ export default {
 
         const token = response.data.token;
         localStorage.setItem("authToken", token);
-        this.$router.push("/");
+        this.$emit("register-success");
+        this.closeRegister();
       } catch (error) {
         console.error("Greška pri registraciji:", error);
       }
     },
     goToLogin() {
-      this.$router.push("/login");
+      this.$emit("go-to-login");
+    },
+    closeRegister() {
+      this.$emit("close-register");
     },
   },
 };

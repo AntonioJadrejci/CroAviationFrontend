@@ -1,8 +1,12 @@
 <template>
-  <v-overlay :value="true" z-index="100">
-    <v-card class="elevation-12">
+  <v-dialog :value="showLogin" max-width="600" persistent @input="closeLogin">
+    <v-card>
       <v-toolbar color="deep-purple darken-4" dark flat>
         <v-toolbar-title>Prijava</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="closeLogin">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-toolbar>
       <v-card-text>
         <v-form @submit.prevent="login">
@@ -28,13 +32,16 @@
         <v-btn text @click="goToRegister">Registriraj se</v-btn>
       </v-card-actions>
     </v-card>
-  </v-overlay>
+  </v-dialog>
 </template>
 
 <script>
 import axios from "axios";
 
 export default {
+  props: {
+    showLogin: Boolean,
+  },
   data() {
     return {
       email: "",
@@ -51,13 +58,17 @@ export default {
 
         const token = response.data.token;
         localStorage.setItem("authToken", token);
-        this.$router.push("/");
+        this.$emit("login-success");
+        this.closeLogin();
       } catch (error) {
         console.error("Greška pri prijavi:", error);
       }
     },
     goToRegister() {
-      this.$router.push("/register");
+      this.$emit("go-to-register");
+    },
+    closeLogin() {
+      this.$emit("close-login");
     },
   },
 };

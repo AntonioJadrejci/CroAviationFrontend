@@ -44,20 +44,13 @@
           <v-row v-if="showCities" class="ml-8">
             <v-col cols="12">
               <v-btn
-                v-for="city in [
-                  'ZAGREB',
-                  'DUBROVNIK',
-                  'SPLIT',
-                  'ZADAR',
-                  'PULA',
-                  'RIJEKA',
-                  'OSIJEK',
-                ]"
+                v-for="city in cities"
                 :key="city"
                 color="deep-purple lighten-1"
                 x-large
                 block
                 class="mb-2 custom-button"
+                @click="changeCityImage(city)"
               >
                 {{ city }}
               </v-btn>
@@ -107,7 +100,7 @@
 
         <!-- Desna polovica (slika) -->
         <v-col cols="12" md="6" class="text-center">
-          <v-img :src="require('../assets/hr.png')" contain height="500" />
+          <v-img :src="currentImage" contain height="500" />
         </v-col>
       </v-row>
     </v-container>
@@ -164,26 +157,36 @@
 import axios from "axios";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
-import ProfileView from "@/views/ProfileView.vue"; // Dodano
-import AddPlaneView from "@/views/AddPlaneView.vue"; // Dodano
+import ProfileView from "@/views/ProfileView.vue";
+import AddPlaneView from "@/views/AddPlaneView.vue";
 
 export default {
   name: "HomeView",
   components: {
     LoginView,
     RegisterView,
-    ProfileView, // Dodano
-    AddPlaneView, // Dodano
+    ProfileView,
+    AddPlaneView,
   },
   data: () => ({
-    message: "", // Dodano za pohranu poruke s backenda
-    isLoggedIn: false, // Stanje prijave korisnika
-    showAbout: false, // Kontrola prikaza ABOUT dialoga
-    showLogin: false, // Kontrola prikaza Login dialoga
-    showRegister: false, // Kontrola prikaza Register dialoga
-    showCities: false, // Dodano stanje za prikaz gradova
-    showProfile: false, // Dodano stanje za prikaz Profile dialoga
-    showAddPlane: false, // Dodano stanje za prikaz AddPlane dialoga
+    message: "",
+    isLoggedIn: false,
+    showAbout: false,
+    showLogin: false,
+    showRegister: false,
+    showCities: false,
+    showProfile: false,
+    showAddPlane: false,
+    currentImage: require("@/assets/hr.png"), // Početna slika
+    cities: [
+      "ZAGREB",
+      "DUBROVNIK",
+      "SPLIT",
+      "ZADAR",
+      "PULA",
+      "RIJEKA",
+      "OSIJEK",
+    ], // Lista gradova
   }),
 
   methods: {
@@ -196,6 +199,8 @@ export default {
         // Ako je korisnik već na homepageu, osvježi stranicu
         window.location.reload();
       }
+      // Vrati sliku na početnu
+      this.currentImage = require("@/assets/hr.png");
     },
 
     // Metoda za prijavu/odjavu
@@ -213,6 +218,22 @@ export default {
     // Metoda za navigaciju na stranicu "AIRPORTS"
     goToAirports() {
       this.showCities = !this.showCities; // Promjena stanja za prikaz gradova
+    },
+
+    // Metoda za promjenu slike grada
+    changeCityImage(city) {
+      const cityImageMap = {
+        ZAGREB: "zagreb.jpg",
+        DUBROVNIK: "dubrovnik.jpg",
+        SPLIT: "split.jpg",
+        ZADAR: "zadar.jpg",
+        PULA: "pula.jpg",
+        RIJEKA: "rijeka.jpg",
+        OSIJEK: "osijek.jpg",
+      };
+
+      // Postavi sliku grada
+      this.currentImage = require(`@/assets/${cityImageMap[city]}`);
     },
 
     // Metoda za navigaciju na stranicu "PROFILE"

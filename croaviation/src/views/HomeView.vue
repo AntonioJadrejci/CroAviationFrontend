@@ -76,6 +76,18 @@
             PROFILE
           </v-btn>
 
+          <!-- Gumb "ADD A PLANE" (prikazuje se samo ako je korisnik prijavljen) -->
+          <v-btn
+            v-if="isLoggedIn"
+            color="deep-purple darken-4"
+            x-large
+            block
+            class="mb-4 custom-button"
+            @click="goToAddPlane"
+          >
+            ADD A PLANE
+          </v-btn>
+
           <!-- Gumb "ABOUT" -->
           <v-btn
             color="deep-purple darken-4"
@@ -189,8 +201,12 @@ export default {
 
     // Metoda za navigaciju na stranicu "PROFILE"
     goToProfile() {
-      console.log("Kliknuto na PROFILE");
-      // Ovdje možete dodati logiku za navigaciju na stranicu "PROFILE"
+      this.$router.push("/profile");
+    },
+
+    // Metoda za navigaciju na stranicu "ADD A PLANE"
+    goToAddPlane() {
+      this.$router.push("/add-plane");
     },
 
     // Metoda za rukovanje uspješnom prijavom

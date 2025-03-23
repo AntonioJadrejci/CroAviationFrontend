@@ -1,25 +1,54 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-form @submit.prevent="submitPlane">
-          <v-select
-            v-model="selectedAirport"
-            :items="airports"
-            label="Zračna luka"
-            required
-          ></v-select>
-          <v-text-field v-model="planeModel" label="Model aviona" required></v-text-field>
-          <v-text-field v-model="airline" label="Aviokompanija" required></v-text-field>
-          <v-text-field v-model="registration" label="Registracija aviona" required></v-text-field>
-          <v-date-picker v-model="arrivalDate" label="Datum dolaska" required></v-date-picker>
-          <v-date-picker v-model="departureDate" label="Datum odlaska" required></v-date-picker>
-          <v-file-input v-model="planeImage" label="Slika aviona" accept="image/*"></v-file-input>
-          <v-btn type="submit" color="primary">Upload</v-btn>
-        </v-form>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-card>
+    <v-toolbar color="deep-purple darken-4" dark flat>
+      <v-toolbar-title>Add a Plane</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="closeAddPlane">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-toolbar>
+    <v-card-text>
+      <v-form @submit.prevent="submitPlane">
+        <v-select
+          v-model="selectedAirport"
+          :items="airports"
+          label="Zračna luka"
+          required
+        ></v-select>
+        <v-text-field
+          v-model="planeModel"
+          label="Model aviona"
+          required
+        ></v-text-field>
+        <v-text-field
+          v-model="airline"
+          label="Aviokompanija"
+          required
+        ></v-text-field>
+        <v-text-field
+          v-model="registration"
+          label="Registracija aviona"
+          required
+        ></v-text-field>
+        <v-date-picker
+          v-model="arrivalDate"
+          label="Datum dolaska"
+          required
+        ></v-date-picker>
+        <v-date-picker
+          v-model="departureDate"
+          label="Datum odlaska"
+          required
+        ></v-date-picker>
+        <v-file-input
+          v-model="planeImage"
+          label="Slika aviona"
+          accept="image/*"
+        ></v-file-input>
+        <v-btn type="submit" color="primary">Upload</v-btn>
+      </v-form>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -36,7 +65,15 @@ export default {
       arrivalDate: "",
       departureDate: "",
       planeImage: null,
-      airports: ["Zagreb", "Dubrovnik", "Split", "Zadar", "Pula", "Rijeka", "Osijek"],
+      airports: [
+        "Zagreb",
+        "Dubrovnik",
+        "Split",
+        "Zadar",
+        "Pula",
+        "Rijeka",
+        "Osijek",
+      ],
     };
   },
   methods: {
@@ -58,10 +95,13 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
-        this.$router.push("/profile");
+        this.$emit("close-add-plane");
       } catch (error) {
         console.error("Error adding plane:", error);
       }
+    },
+    closeAddPlane() {
+      this.$emit("close-add-plane");
     },
   },
 };

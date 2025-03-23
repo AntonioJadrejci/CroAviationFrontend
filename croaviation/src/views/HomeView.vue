@@ -147,6 +147,16 @@
       @register-success="handleRegisterSuccess"
       @go-to-login="showLogin = true"
     />
+
+    <!-- Profile dialog -->
+    <v-dialog v-model="showProfile" max-width="600" persistent>
+      <ProfileView @close-profile="showProfile = false" />
+    </v-dialog>
+
+    <!-- Add Plane dialog -->
+    <v-dialog v-model="showAddPlane" max-width="800" persistent>
+      <AddPlaneView @close-add-plane="showAddPlane = false" />
+    </v-dialog>
   </v-app>
 </template>
 
@@ -154,12 +164,16 @@
 import axios from "axios";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
+import ProfileView from "@/views/ProfileView.vue"; // Dodano
+import AddPlaneView from "@/views/AddPlaneView.vue"; // Dodano
 
 export default {
   name: "HomeView",
   components: {
     LoginView,
     RegisterView,
+    ProfileView, // Dodano
+    AddPlaneView, // Dodano
   },
   data: () => ({
     message: "", // Dodano za pohranu poruke s backenda
@@ -168,6 +182,8 @@ export default {
     showLogin: false, // Kontrola prikaza Login dialoga
     showRegister: false, // Kontrola prikaza Register dialoga
     showCities: false, // Dodano stanje za prikaz gradova
+    showProfile: false, // Dodano stanje za prikaz Profile dialoga
+    showAddPlane: false, // Dodano stanje za prikaz AddPlane dialoga
   }),
 
   methods: {
@@ -201,12 +217,12 @@ export default {
 
     // Metoda za navigaciju na stranicu "PROFILE"
     goToProfile() {
-      this.$router.push("/profile");
+      this.showProfile = true; // Otvori ProfileView u dialogu
     },
 
     // Metoda za navigaciju na stranicu "ADD A PLANE"
     goToAddPlane() {
-      this.$router.push("/add-plane");
+      this.showAddPlane = true; // Otvori AddPlaneView u dialogu
     },
 
     // Metoda za rukovanje uspješnom prijavom

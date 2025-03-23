@@ -1,17 +1,29 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12" class="text-center">
-        <v-avatar size="150">
-          <v-img :src="profileImage || 'https://via.placeholder.com/150'" />
-        </v-avatar>
-        <h1 class="mt-4">{{ username }}</h1>
-        <p>Number of Planes Posted: {{ numberOfPlanes }}</p>
-        <v-btn color="primary" @click="uploadImage">Upload Profile Image</v-btn>
-        <v-btn color="error" @click="deleteAccount" class="mt-4">Delete Your Account</v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-card>
+    <v-toolbar color="deep-purple darken-4" dark flat>
+      <v-toolbar-title>Profile</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="closeProfile">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-toolbar>
+    <v-card-text>
+      <v-avatar size="150">
+        <v-img :src="profileImage || 'https://via.placeholder.com/150'" />
+      </v-avatar>
+      <h1 class="mt-4">{{ username }}</h1>
+      <p>Number of Planes Posted: {{ numberOfPlanes }}</p>
+      <v-file-input
+        v-model="newProfileImage"
+        label="Upload Profile Image"
+        accept="image/*"
+      ></v-file-input>
+      <v-btn color="primary" @click="uploadImage">Upload</v-btn>
+      <v-btn color="error" @click="deleteAccount" class="mt-4"
+        >Delete Your Account</v-btn
+      >
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -24,6 +36,7 @@ export default {
       username: "",
       profileImage: "",
       numberOfPlanes: 0,
+      newProfileImage: null, // Dodano za upload slike
     };
   },
   async mounted() {
@@ -45,7 +58,25 @@ export default {
   },
   methods: {
     async uploadImage() {
-      // Implementacija za upload slike
+      const formData = new FormData();
+      formData.append("profileImage", this.newProfileImage);
+
+      const token = localStorage.getItem("authToken");
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/upload-profile-image",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        this.profileImage = response.data.profileImage; // Ažuriraj profilnu sliku
+      } catch (error) {
+        console.error("Error uploading profile image:", error);
+      }
     },
     async deleteAccount() {
       const token = localStorage.getItem("authToken");
@@ -57,11 +88,15 @@ export default {
             },
           });
           localStorage.removeItem("authToken");
+          this.$emit("close-profile");
           this.$router.push("/");
         } catch (error) {
           console.error("Error deleting account:", error);
         }
       }
+    },
+    closeProfile() {
+      this.$emit("close-profile");
     },
   },
 };

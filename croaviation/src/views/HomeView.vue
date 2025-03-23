@@ -9,7 +9,7 @@
         height="50"
         class="ml-0"
         @click="goToHome"
-        style="cursor: pointer"
+        style="cursor: pointer; position: absolute; right: 1050px"
       />
 
       <v-spacer></v-spacer>
@@ -39,6 +39,30 @@
           >
             AIRPORTS
           </v-btn>
+
+          <!-- Prikaz gradova ispod AIRPORTS buttona -->
+          <v-row v-if="showCities" class="ml-8">
+            <v-col cols="12">
+              <v-btn
+                v-for="city in [
+                  'ZAGREB',
+                  'DUBROVNIK',
+                  'SPLIT',
+                  'ZADAR',
+                  'PULA',
+                  'RIJEKA',
+                  'OSIJEK',
+                ]"
+                :key="city"
+                color="deep-purple lighten-1"
+                x-large
+                block
+                class="mb-2 custom-button"
+              >
+                {{ city }}
+              </v-btn>
+            </v-col>
+          </v-row>
 
           <!-- Gumb "PROFILE" (prikazuje se samo ako je korisnik prijavljen) -->
           <v-btn
@@ -131,6 +155,7 @@ export default {
     showAbout: false, // Kontrola prikaza ABOUT dialoga
     showLogin: false, // Kontrola prikaza Login dialoga
     showRegister: false, // Kontrola prikaza Register dialoga
+    showCities: false, // Dodano stanje za prikaz gradova
   }),
 
   methods: {
@@ -159,8 +184,7 @@ export default {
 
     // Metoda za navigaciju na stranicu "AIRPORTS"
     goToAirports() {
-      console.log("Kliknuto na AIRPORTS");
-      // Ovdje možete dodati logiku za navigaciju na stranicu "AIRPORTS"
+      this.showCities = !this.showCities; // Promjena stanja za prikaz gradova
     },
 
     // Metoda za navigaciju na stranicu "PROFILE"
@@ -222,5 +246,9 @@ export default {
   font-size: 1.5rem; /* Veći font */
   padding: 24px 0; /* Veći padding */
   margin: 8px 0; /* Razmak između gumbova */
+}
+
+.ml-8 {
+  margin-left: 32px; /* Prilagodite marginu prema potrebi */
 }
 </style>

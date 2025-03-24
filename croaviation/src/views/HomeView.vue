@@ -223,13 +223,13 @@ export default {
     // Metoda za promjenu slike grada
     changeCityImage(city) {
       const cityImageMap = {
-        ZAGREB: "zagreb.jpg",
-        DUBROVNIK: "dubrovnik.jpg",
-        SPLIT: "split.jpg",
-        ZADAR: "zadar.jpg",
-        PULA: "pula.jpg",
-        RIJEKA: "rijeka.jpg",
-        OSIJEK: "osijek.jpg",
+        ZAGREB: "Zagreb.jpg",
+        DUBROVNIK: "Dubrovnik.jpg",
+        SPLIT: "Split.jpg",
+        ZADAR: "Zadar.jpg",
+        PULA: "Pula.jpg",
+        RIJEKA: "Rijeka.jpg",
+        OSIJEK: "Osijek.jpg",
       };
 
       // Postavi sliku grada

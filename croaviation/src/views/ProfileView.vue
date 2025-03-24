@@ -7,21 +7,31 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-card-text>
-      <v-avatar size="150">
-        <v-img :src="profileImage || 'https://via.placeholder.com/150'" />
+    <v-card-text class="text-center">
+      <!-- Profilna slika (kružnog oblika) -->
+      <v-avatar size="150" class="mb-4">
+        <v-img :src="getProfileImageUrl(profileImage)" />
       </v-avatar>
+
+      <!-- Ime korisnika -->
       <h1 class="mt-4">{{ username }}</h1>
+
+      <!-- Broj objavljenih aviona -->
       <p>Number of Planes Posted: {{ numberOfPlanes }}</p>
+
+      <!-- Upload profilne slike -->
       <v-file-input
         v-model="newProfileImage"
         label="Upload Profile Image"
         accept="image/*"
+        class="mt-4"
       ></v-file-input>
       <v-btn color="primary" @click="uploadImage">Upload</v-btn>
-      <v-btn color="error" @click="deleteAccount" class="mt-4"
-        >Delete Your Account</v-btn
-      >
+
+      <!-- Brisanje računa -->
+      <v-btn color="error" @click="deleteAccount" class="mt-4">
+        Delete Your Account
+      </v-btn>
     </v-card-text>
   </v-card>
 </template>
@@ -33,13 +43,14 @@ export default {
   name: "ProfileView",
   data() {
     return {
-      username: "",
-      profileImage: "",
-      numberOfPlanes: 0,
-      newProfileImage: null, // Dodano za upload slike
+      username: "", // Ime korisnika
+      profileImage: "", // Trenutna profilna slika
+      numberOfPlanes: 0, // Broj objavljenih aviona
+      newProfileImage: null, // Nova slika za upload
     };
   },
   async mounted() {
+    // Dohvati podatke korisnika prilikom učitavanja komponente
     const token = localStorage.getItem("authToken");
     if (token) {
       try {
@@ -49,7 +60,8 @@ export default {
           },
         });
         this.username = response.data.username;
-        this.profileImage = response.data.profileImage;
+        this.profileImage =
+          response.data.profileImage || require("@/assets/EmptyProfile.png");
         this.numberOfPlanes = response.data.numberOfPlanes;
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -57,6 +69,15 @@ export default {
     }
   },
   methods: {
+    // Metoda za generiranje punog URL-a za profilnu sliku
+    getProfileImageUrl(imagePath) {
+      if (!imagePath || imagePath.startsWith("http")) {
+        return imagePath || require("@/assets/EmptyProfile.png");
+      }
+      return `http://localhost:3000/${imagePath}`;
+    },
+
+    // Metoda za upload profilne slike
     async uploadImage() {
       const formData = new FormData();
       formData.append("profileImage", this.newProfileImage);
@@ -73,11 +94,14 @@ export default {
             },
           }
         );
-        this.profileImage = response.data.profileImage; // Ažuriraj profilnu sliku
+        // Ažuriraj profilnu sliku nakon uspješnog uploada
+        this.profileImage = response.data.profileImage;
       } catch (error) {
         console.error("Error uploading profile image:", error);
       }
     },
+
+    // Metoda za brisanje računa
     async deleteAccount() {
       const token = localStorage.getItem("authToken");
       if (token) {
@@ -87,6 +111,7 @@ export default {
               Authorization: `Bearer ${token}`,
             },
           });
+          // Ukloni token i preusmjeri korisnika na početnu stranicu
           localStorage.removeItem("authToken");
           this.$emit("close-profile");
           this.$router.push("/");
@@ -95,9 +120,35 @@ export default {
         }
       }
     },
+
+    // Metoda za zatvaranje prozora profila
     closeProfile() {
       this.$emit("close-profile");
     },
   },
 };
 </script>
+
+<style scoped>
+/* Dodatni stilovi ako su potrebni */
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.profile-picture {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 20px auto;
+  border: 3px solid white;
+}
+</style>

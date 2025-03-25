@@ -6,6 +6,7 @@ import RegisterView from "@/views/RegisterView.vue";
 import AddPlaneView from "@/views/AddPlaneView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -42,6 +43,11 @@ const routes = [
     name: "ProfileView",
     component: ProfileView,
   },
+  {
+    path: "/airport/:airport/:airline",
+    name: "AirlinePlanesView",
+    component: () => import("@/views/AirlinePlanesView.vue"),
+  }
 ]
 
 const router = new VueRouter({

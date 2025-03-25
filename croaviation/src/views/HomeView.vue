@@ -57,6 +57,23 @@
             </v-col>
           </v-row>
 
+          <!-- Prikaz aviokompanija ispod gradova -->
+          <v-row v-if="showAirlines" class="ml-8">
+            <v-col cols="12">
+              <v-btn
+                v-for="airline in airlines"
+                :key="airline"
+                color="deep-purple lighten-1"
+                x-large
+                block
+                class="mb-2 custom-button"
+                @click="goToAirline(airline)"
+              >
+                {{ airline }}
+              </v-btn>
+            </v-col>
+          </v-row>
+
           <!-- Gumb "PROFILE" (prikazuje se samo ako je korisnik prijavljen) -->
           <v-btn
             v-if="isLoggedIn"
@@ -176,6 +193,7 @@ export default {
     showCities: false,
     showProfile: false,
     showAddPlane: false,
+    showAirlines: false,
     currentImage: require("@/assets/hr.png"),
     cities: [
       "ZAGREB",
@@ -186,6 +204,7 @@ export default {
       "RIJEKA",
       "OSIJEK",
     ],
+    airlines: [],
   }),
 
   methods: {
@@ -196,6 +215,8 @@ export default {
         window.location.reload();
       }
       this.currentImage = require("@/assets/hr.png");
+      this.showCities = false;
+      this.showAirlines = false;
     },
 
     handleAuth() {
@@ -211,9 +232,10 @@ export default {
 
     goToAirports() {
       this.showCities = !this.showCities;
+      this.showAirlines = false;
     },
 
-    changeCityImage(city) {
+    async changeCityImage(city) {
       const cityImageMap = {
         ZAGREB: "Zagreb.jpg",
         DUBROVNIK: "Dubrovnik.jpg",
@@ -224,6 +246,27 @@ export default {
         OSIJEK: "Osijek.jpg",
       };
       this.currentImage = require(`@/assets/${cityImageMap[city]}`);
+
+      try {
+        const response = await this.$api.get(
+          `/api/airlines/${city.toLowerCase()}`
+        );
+        this.airlines = response.data;
+        this.showAirlines = true;
+      } catch (error) {
+        console.error("Error fetching airlines:", error);
+        this.airlines = [];
+        this.showAirlines = false;
+      }
+    },
+
+    goToAirline(airline) {
+      const city = this.cities.find((c) =>
+        this.currentImage.includes(c.toLowerCase() + ".jpg")
+      );
+      if (city) {
+        this.$router.push(`/airport/${city.toLowerCase()}/${airline}`);
+      }
     },
 
     goToProfile() {

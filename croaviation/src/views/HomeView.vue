@@ -74,6 +74,26 @@
             </v-col>
           </v-row>
 
+          <!-- Prikaz objava za odabrani grad -->
+          <v-row v-if="selectedCityPlanes.length > 0" class="ml-8">
+            <v-col cols="12">
+              <v-card
+                v-for="plane in selectedCityPlanes"
+                :key="plane._id"
+                class="mb-4"
+                @click="showPlaneDetails(plane)"
+              >
+                <v-img
+                  :src="getPlaneImageUrl(plane.planeImage)"
+                  height="200"
+                  contain
+                ></v-img>
+                <v-card-title>{{ plane.planeModel }}</v-card-title>
+                <v-card-subtitle>{{ plane.airline }}</v-card-subtitle>
+              </v-card>
+            </v-col>
+          </v-row>
+
           <!-- Gumb "PROFILE" (prikazuje se samo ako je korisnik prijavljen) -->
           <v-btn
             v-if="isLoggedIn"
@@ -167,6 +187,36 @@
     <v-dialog v-model="showAddPlane" max-width="800" persistent>
       <AddPlaneView @close-add-plane="showAddPlane = false" />
     </v-dialog>
+
+    <!-- Plane Details dialog -->
+    <v-dialog v-model="showPlaneDetailsDialog" max-width="600">
+      <v-card v-if="selectedPlane">
+        <v-img
+          :src="getPlaneImageUrl(selectedPlane.planeImage)"
+          height="300"
+          contain
+        ></v-img>
+        <v-card-title>{{ selectedPlane.planeModel }}</v-card-title>
+        <v-card-subtitle>
+          <div>Airline: {{ selectedPlane.airline }}</div>
+          <div>Registration: {{ selectedPlane.registration }}</div>
+          <div>Arrival Date: {{ formatDate(selectedPlane.arrivalDate) }}</div>
+          <div>
+            Departure Date: {{ formatDate(selectedPlane.departureDate) }}
+          </div>
+          <div>Posted by: {{ selectedPlane.username || "Unknown" }}</div>
+        </v-card-subtitle>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="deep-purple darken-4"
+            text
+            @click="showPlaneDetailsDialog = false"
+            >Close</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -194,6 +244,7 @@ export default {
     showProfile: false,
     showAddPlane: false,
     showAirlines: false,
+    showPlaneDetailsDialog: false,
     currentImage: require("@/assets/hr.png"),
     cities: [
       "ZAGREB",
@@ -205,6 +256,8 @@ export default {
       "OSIJEK",
     ],
     airlines: [],
+    selectedCityPlanes: [],
+    selectedPlane: null,
   }),
 
   methods: {
@@ -217,6 +270,7 @@ export default {
       this.currentImage = require("@/assets/hr.png");
       this.showCities = false;
       this.showAirlines = false;
+      this.selectedCityPlanes = [];
     },
 
     handleAuth() {
@@ -233,6 +287,7 @@ export default {
     goToAirports() {
       this.showCities = !this.showCities;
       this.showAirlines = false;
+      this.selectedCityPlanes = [];
     },
 
     async changeCityImage(city) {
@@ -248,14 +303,22 @@ export default {
       this.currentImage = require(`@/assets/${cityImageMap[city]}`);
 
       try {
-        const response = await this.$api.get(
+        // Dohvati aviokompanije
+        const airlinesResponse = await this.$api.get(
           `/api/airlines/${city.toLowerCase()}`
         );
-        this.airlines = response.data;
+        this.airlines = airlinesResponse.data;
         this.showAirlines = true;
+
+        // Dohvati sve avione za odabrani grad
+        const planesResponse = await this.$api.get(
+          `/api/planes/${city.toLowerCase()}`
+        );
+        this.selectedCityPlanes = planesResponse.data;
       } catch (error) {
-        console.error("Error fetching airlines:", error);
+        console.error("Error fetching data:", error);
         this.airlines = [];
+        this.selectedCityPlanes = [];
         this.showAirlines = false;
       }
     },
@@ -299,6 +362,23 @@ export default {
           this.isLoggedIn = false;
         }
       }
+    },
+
+    getPlaneImageUrl(imagePath) {
+      if (!imagePath) return require("@/assets/no-image.png");
+      if (imagePath.startsWith("http")) return imagePath;
+      return `http://localhost:3000/${imagePath}`;
+    },
+
+    showPlaneDetails(plane) {
+      this.selectedPlane = plane;
+      this.showPlaneDetailsDialog = true;
+    },
+
+    formatDate(dateString) {
+      if (!dateString) return "N/A";
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
     },
   },
 

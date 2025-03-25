@@ -71,8 +71,8 @@ export default {
           }
         );
 
-        const token = response.data.token;
-        localStorage.setItem("authToken", token);
+        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
         this.$emit("register-success");
         this.closeRegister();
       } catch (error) {

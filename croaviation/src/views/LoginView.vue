@@ -56,8 +56,8 @@ export default {
           password: this.password,
         });
 
-        const token = response.data.token;
-        localStorage.setItem("authToken", token);
+        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
         this.$emit("login-success");
         this.closeLogin();
       } catch (error) {

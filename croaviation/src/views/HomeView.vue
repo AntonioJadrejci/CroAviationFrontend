@@ -154,7 +154,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
@@ -177,7 +176,7 @@ export default {
     showCities: false,
     showProfile: false,
     showAddPlane: false,
-    currentImage: require("@/assets/hr.png"), // Početna slika
+    currentImage: require("@/assets/hr.png"),
     cities: [
       "ZAGREB",
       "DUBROVNIK",
@@ -186,41 +185,34 @@ export default {
       "PULA",
       "RIJEKA",
       "OSIJEK",
-    ], // Lista gradova
+    ],
   }),
 
   methods: {
-    // Metoda za navigaciju na homepage i osvježavanje stranice
     goToHome() {
       if (this.$route.path !== "/") {
-        // Ako korisnik nije na homepageu, navigiraj na homepage
         this.$router.push("/");
       } else {
-        // Ako je korisnik već na homepageu, osvježi stranicu
         window.location.reload();
       }
-      // Vrati sliku na početnu
       this.currentImage = require("@/assets/hr.png");
     },
 
-    // Metoda za prijavu/odjavu
     handleAuth() {
       if (this.isLoggedIn) {
-        // Odjava korisnika
         localStorage.removeItem("authToken");
+        localStorage.removeItem("refreshToken");
         this.isLoggedIn = false;
+        window.location.reload();
       } else {
-        // Prijava korisnika
         this.showLogin = true;
       }
     },
 
-    // Metoda za navigaciju na stranicu "AIRPORTS"
     goToAirports() {
-      this.showCities = !this.showCities; // Promjena stanja za prikaz gradova
+      this.showCities = !this.showCities;
     },
 
-    // Metoda za promjenu slike grada
     changeCityImage(city) {
       const cityImageMap = {
         ZAGREB: "Zagreb.jpg",
@@ -231,55 +223,61 @@ export default {
         RIJEKA: "Rijeka.jpg",
         OSIJEK: "Osijek.jpg",
       };
-
-      // Postavi sliku grada
       this.currentImage = require(`@/assets/${cityImageMap[city]}`);
     },
 
-    // Metoda za navigaciju na stranicu "PROFILE"
     goToProfile() {
-      this.showProfile = true; // Otvori ProfileView u dialogu
+      this.showProfile = true;
     },
 
-    // Metoda za navigaciju na stranicu "ADD A PLANE"
     goToAddPlane() {
-      this.showAddPlane = true; // Otvori AddPlaneView u dialogu
+      this.showAddPlane = true;
     },
 
-    // Metoda za rukovanje uspješnom prijavom
     handleLoginSuccess() {
       this.isLoggedIn = true;
       this.showLogin = false;
+      this.checkTokenValidity();
     },
 
-    // Metoda za rukovanje uspješnom registracijom
     handleRegisterSuccess() {
       this.isLoggedIn = true;
       this.showRegister = false;
+      this.checkTokenValidity();
+    },
+
+    async checkTokenValidity() {
+      try {
+        await this.$api.get("/api/profile");
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("refreshToken");
+          this.isLoggedIn = false;
+        }
+      }
     },
   },
 
   async mounted() {
     try {
-      // Slanje zahtjeva na backend
-      const response = await axios.get("http://localhost:3000/api/endpoint"); // Promijenjeno na puni URL
-      this.message = response.data.message; // Postavi poruku s backenda
+      const response = await this.$api.get("/api/endpoint");
+      this.message = response.data.message;
     } catch (error) {
       console.error("Došlo je do greške pri dohvatu podataka:", error);
-      this.message = "Greška pri dohvatu podataka s backenda."; // Prikaži grešku korisniku
+      this.message = "Greška pri dohvatu podataka s backenda.";
     }
 
-    // Provjera da li je korisnik prijavljen
     const token = localStorage.getItem("authToken");
     if (token) {
       this.isLoggedIn = true;
+      this.checkTokenValidity();
     }
   },
 };
 </script>
 
 <style scoped>
-/* Dodatni stilovi ako su potrebni */
 .bg-black {
   background-color: black;
 }
@@ -292,16 +290,15 @@ export default {
   height: 100vh;
 }
 
-/* Custom stil za gumbove */
 .custom-button {
-  background-color: #4a148c !important; /* Boja #4A148C */
-  color: white !important; /* Bijeli tekst */
-  font-size: 1.5rem; /* Veći font */
-  padding: 24px 0; /* Veći padding */
-  margin: 8px 0; /* Razmak između gumbova */
+  background-color: #4a148c !important;
+  color: white !important;
+  font-size: 1.5rem;
+  padding: 24px 0;
+  margin: 8px 0;
 }
 
 .ml-8 {
-  margin-left: 32px; /* Prilagodite marginu prema potrebi */
+  margin-left: 32px;
 }
 </style>

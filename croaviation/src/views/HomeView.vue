@@ -225,6 +225,7 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import AddPlaneView from "@/views/AddPlaneView.vue";
+import axios from "axios";
 
 export default {
   name: "HomeView",
@@ -304,14 +305,14 @@ export default {
 
       try {
         // Dohvati aviokompanije
-        const airlinesResponse = await this.$api.get(
+        const airlinesResponse = await axios.get(
           `/api/airlines/${city.toLowerCase()}`
         );
         this.airlines = airlinesResponse.data;
         this.showAirlines = true;
 
         // Dohvati sve avione za odabrani grad
-        const planesResponse = await this.$api.get(
+        const planesResponse = await axios.get(
           `/api/planes/${city.toLowerCase()}`
         );
         this.selectedCityPlanes = planesResponse.data;
@@ -354,7 +355,7 @@ export default {
 
     async checkTokenValidity() {
       try {
-        await this.$api.get("/api/profile");
+        await axios.get("/api/profile");
       } catch (error) {
         if (error.response && error.response.status === 403) {
           localStorage.removeItem("authToken");
@@ -384,7 +385,7 @@ export default {
 
   async mounted() {
     try {
-      const response = await this.$api.get("/api/endpoint");
+      const response = await axios.get("/api/endpoint");
       this.message = response.data.message;
     } catch (error) {
       console.error("Došlo je do greške pri dohvatu podataka:", error);

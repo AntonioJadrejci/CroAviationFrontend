@@ -14,38 +14,111 @@
           :items="airports"
           label="Zračna luka"
           required
+          :rules="[(v) => !!v || 'Zračna luka je obavezna']"
         ></v-select>
+
         <v-text-field
           v-model="planeModel"
           label="Model aviona"
           required
+          :rules="[(v) => !!v || 'Model aviona je obavezan']"
         ></v-text-field>
+
         <v-text-field
           v-model="airline"
           label="Aviokompanija"
           required
+          :rules="[(v) => !!v || 'Aviokompanija je obavezna']"
         ></v-text-field>
+
         <v-text-field
           v-model="registration"
           label="Registracija aviona"
           required
+          :rules="[(v) => !!v || 'Registracija je obavezna']"
         ></v-text-field>
-        <v-date-picker
-          v-model="arrivalDate"
-          label="Datum dolaska"
-          required
-        ></v-date-picker>
-        <v-date-picker
-          v-model="departureDate"
-          label="Datum odlaska"
-          required
-        ></v-date-picker>
+
+        <v-menu
+          ref="arrivalMenu"
+          v-model="arrivalMenu"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="arrivalDate"
+              label="Datum dolaska"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+              :rules="[(v) => !!v || 'Datum dolaska je obavezan']"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="arrivalDate"
+            no-title
+            scrollable
+            @input="arrivalMenu = false"
+          ></v-date-picker>
+        </v-menu>
+
+        <v-menu
+          ref="departureMenu"
+          v-model="departureMenu"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="departureDate"
+              label="Datum odlaska"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+              :rules="[(v) => !!v || 'Datum odlaska je obavezan']"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="departureDate"
+            no-title
+            scrollable
+            @input="departureMenu = false"
+          ></v-date-picker>
+        </v-menu>
+
         <v-file-input
           v-model="planeImage"
           label="Slika aviona"
           accept="image/*"
+          prepend-icon="mdi-camera"
+          :rules="[
+            (v) => !!v || 'Slika je obavezna',
+            (v) => !v || v.size < 2000000 || 'Slika mora biti manja od 2 MB',
+          ]"
         ></v-file-input>
-        <v-btn type="submit" color="primary">Upload</v-btn>
+
+        <v-btn
+          type="submit"
+          color="primary"
+          :loading="loading"
+          :disabled="loading"
+        >
+          Upload
+        </v-btn>
+
+        <v-alert v-if="errorMessage" type="error" class="mt-4">
+          {{ errorMessage }}
+        </v-alert>
+
+        <v-alert v-if="successMessage" type="success" class="mt-4">
+          {{ successMessage }}
+        </v-alert>
       </v-form>
     </v-card-text>
   </v-card>
@@ -62,9 +135,14 @@ export default {
       planeModel: "",
       airline: "",
       registration: "",
-      arrivalDate: "",
-      departureDate: "",
+      arrivalDate: new Date().toISOString().substr(0, 10),
+      departureDate: new Date().toISOString().substr(0, 10),
+      arrivalMenu: false,
+      departureMenu: false,
       planeImage: null,
+      loading: false,
+      errorMessage: "",
+      successMessage: "",
       airports: [
         "Zagreb",
         "Dubrovnik",
@@ -78,26 +156,43 @@ export default {
   },
   methods: {
     async submitPlane() {
-      const formData = new FormData();
-      formData.append("airport", this.selectedAirport);
-      formData.append("planeModel", this.planeModel);
-      formData.append("airline", this.airline);
-      formData.append("registration", this.registration);
-      formData.append("arrivalDate", this.arrivalDate);
-      formData.append("departureDate", this.departureDate);
-      formData.append("planeImage", this.planeImage);
+      this.loading = true;
+      this.errorMessage = "";
+      this.successMessage = "";
 
-      const token = localStorage.getItem("authToken");
       try {
-        await axios.post("http://localhost:3000/api/add-plane", formData, {
+        const formData = new FormData();
+        formData.append("airport", this.selectedAirport);
+        formData.append("planeModel", this.planeModel);
+        formData.append("airline", this.airline);
+        formData.append("registration", this.registration);
+        formData.append("arrivalDate", this.arrivalDate);
+        formData.append("departureDate", this.departureDate);
+
+        if (this.planeImage) {
+          formData.append("planeImage", this.planeImage);
+        }
+
+        const token = localStorage.getItem("authToken");
+        await axios.post("/api/add-plane", formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         });
-        this.$emit("close-add-plane");
+
+        this.successMessage = "Plane added successfully!";
+        setTimeout(() => {
+          this.$emit("close-add-plane");
+          this.$emit("plane-added");
+        }, 1500);
       } catch (error) {
         console.error("Error adding plane:", error);
+        this.errorMessage =
+          error.response?.data?.message ||
+          "Error adding plane. Please try again.";
+      } finally {
+        this.loading = false;
       }
     },
     closeAddPlane() {
@@ -106,3 +201,19 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-card {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.v-text-field,
+.v-select {
+  margin-bottom: 16px;
+}
+
+.v-btn {
+  margin-top: 16px;
+}
+</style>

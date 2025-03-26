@@ -185,7 +185,10 @@
 
     <!-- Add Plane dialog -->
     <v-dialog v-model="showAddPlane" max-width="800" persistent>
-      <AddPlaneView @close-add-plane="showAddPlane = false" />
+      <AddPlaneView
+        @close-add-plane="showAddPlane = false"
+        @plane-added="refreshPlanes"
+      />
     </v-dialog>
 
     <!-- Plane Details dialog -->
@@ -259,6 +262,7 @@ export default {
     airlines: [],
     selectedCityPlanes: [],
     selectedPlane: null,
+    currentCity: null,
   }),
 
   methods: {
@@ -272,6 +276,7 @@ export default {
       this.showCities = false;
       this.showAirlines = false;
       this.selectedCityPlanes = [];
+      this.currentCity = null;
     },
 
     handleAuth() {
@@ -289,9 +294,11 @@ export default {
       this.showCities = !this.showCities;
       this.showAirlines = false;
       this.selectedCityPlanes = [];
+      this.currentCity = null;
     },
 
     async changeCityImage(city) {
+      this.currentCity = city;
       const cityImageMap = {
         ZAGREB: "Zagreb.jpg",
         DUBROVNIK: "Dubrovnik.jpg",
@@ -306,21 +313,36 @@ export default {
       try {
         // Dohvati aviokompanije
         const airlinesResponse = await axios.get(
-          `/api/airlines/${city.toLowerCase()}`
+          `http://localhost:3000/api/airlines/${city.toLowerCase()}`
         );
         this.airlines = airlinesResponse.data;
         this.showAirlines = true;
 
         // Dohvati sve avione za odabrani grad
-        const planesResponse = await axios.get(
-          `/api/planes/${city.toLowerCase()}`
-        );
-        this.selectedCityPlanes = planesResponse.data;
+        await this.fetchPlanesForCity(city.toLowerCase());
       } catch (error) {
         console.error("Error fetching data:", error);
         this.airlines = [];
         this.selectedCityPlanes = [];
         this.showAirlines = false;
+      }
+    },
+
+    async fetchPlanesForCity(city) {
+      try {
+        const planesResponse = await axios.get(
+          `http://localhost:3000/api/planes/${city}`
+        );
+        this.selectedCityPlanes = planesResponse.data;
+      } catch (error) {
+        console.error("Error fetching planes:", error);
+        this.selectedCityPlanes = [];
+      }
+    },
+
+    async refreshPlanes() {
+      if (this.currentCity) {
+        await this.fetchPlanesForCity(this.currentCity.toLowerCase());
       }
     },
 
@@ -355,7 +377,7 @@ export default {
 
     async checkTokenValidity() {
       try {
-        await axios.get("/api/profile");
+        await axios.get("http://localhost:3000/api/profile");
       } catch (error) {
         if (error.response && error.response.status === 403) {
           localStorage.removeItem("authToken");
@@ -385,8 +407,8 @@ export default {
 
   async mounted() {
     try {
-      const response = await axios.get("/api/endpoint");
-      this.message = response.data.message;
+      const response = await axios.get("http://localhost:3000/api/health");
+      this.message = response.data.status;
     } catch (error) {
       console.error("Došlo je do greške pri dohvatu podataka:", error);
       this.message = "Greška pri dohvatu podataka s backenda.";

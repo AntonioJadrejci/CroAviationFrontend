@@ -6,7 +6,8 @@ import vuetify from './plugins/vuetify'
 import axios from 'axios'
 
 // Axios configuration
-axios.defaults.baseURL = 'http://localhost:3000/api' // Added /api to base URL
+// Change this line in main.js
+axios.defaults.baseURL = 'http://localhost:3000' // Remove the /api from here 
 axios.interceptors.request.use(config => {
   const token = localStorage.getItem('authToken')
   if (token) {

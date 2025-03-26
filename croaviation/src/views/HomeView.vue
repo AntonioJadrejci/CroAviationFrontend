@@ -2,7 +2,6 @@
   <v-app>
     <!-- Gornja traka (App Bar) -->
     <v-app-bar app color="black" dark>
-      <!-- Logo u gornjem lijevom kutu -->
       <v-img
         :src="require('../assets/CroLogo.png')"
         contain
@@ -11,11 +10,7 @@
         @click="goToHome"
         style="cursor: pointer; position: absolute; right: 1050px"
       />
-
       <v-spacer></v-spacer>
-      <!-- Razmak između loga i gumba -->
-
-      <!-- Gumb za prijavu/odjavu u gornjem desnom kutu -->
       <v-btn text @click="handleAuth">
         <v-icon left>{{
           isLoggedIn ? "mdi-account-circle" : "mdi-login"
@@ -29,7 +24,6 @@
       <v-row align="center" justify="center" class="fill-height">
         <!-- Lijeva polovica (sadržaj) -->
         <v-col cols="12" md="6" class="text-center">
-          <!-- Gumb "AIRPORTS" -->
           <v-btn
             color="deep-purple darken-4"
             x-large
@@ -40,7 +34,6 @@
             AIRPORTS
           </v-btn>
 
-          <!-- Prikaz gradova ispod AIRPORTS buttona -->
           <v-row v-if="showCities" class="ml-8">
             <v-col cols="12">
               <v-btn
@@ -57,44 +50,6 @@
             </v-col>
           </v-row>
 
-          <!-- Prikaz aviokompanija ispod gradova -->
-          <v-row v-if="showAirlines" class="ml-8">
-            <v-col cols="12">
-              <v-btn
-                v-for="airline in airlines"
-                :key="airline"
-                color="deep-purple lighten-1"
-                x-large
-                block
-                class="mb-2 custom-button"
-                @click="goToAirline(airline)"
-              >
-                {{ airline }}
-              </v-btn>
-            </v-col>
-          </v-row>
-
-          <!-- Prikaz objava za odabrani grad -->
-          <v-row v-if="selectedCityPlanes.length > 0" class="ml-8">
-            <v-col cols="12">
-              <v-card
-                v-for="plane in selectedCityPlanes"
-                :key="plane._id"
-                class="mb-4"
-                @click="showPlaneDetails(plane)"
-              >
-                <v-img
-                  :src="getPlaneImageUrl(plane.planeImage)"
-                  height="200"
-                  contain
-                ></v-img>
-                <v-card-title>{{ plane.planeModel }}</v-card-title>
-                <v-card-subtitle>{{ plane.airline }}</v-card-subtitle>
-              </v-card>
-            </v-col>
-          </v-row>
-
-          <!-- Gumb "PROFILE" (prikazuje se samo ako je korisnik prijavljen) -->
           <v-btn
             v-if="isLoggedIn"
             color="deep-purple darken-4"
@@ -106,7 +61,6 @@
             PROFILE
           </v-btn>
 
-          <!-- Gumb "ADD A PLANE" (prikazuje se samo ako je korisnik prijavljen) -->
           <v-btn
             v-if="isLoggedIn"
             color="deep-purple darken-4"
@@ -118,7 +72,6 @@
             ADD A PLANE
           </v-btn>
 
-          <!-- Gumb "ABOUT" -->
           <v-btn
             color="deep-purple darken-4"
             x-large
@@ -129,13 +82,11 @@
             ABOUT
           </v-btn>
 
-          <!-- Dodano za prikaz poruke s backenda -->
           <v-alert v-if="message" type="success" class="mt-4">
             {{ message }}
           </v-alert>
         </v-col>
 
-        <!-- Desna polovica (slika) -->
         <v-col cols="12" md="6" class="text-center">
           <v-img :src="currentImage" contain height="500" />
         </v-col>
@@ -220,6 +171,59 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- City Planes Dialog -->
+    <v-dialog
+      v-model="showCityPlanesDialog"
+      max-width="800"
+      scrollable
+      persistent
+    >
+      <v-card dark color="black">
+        <v-toolbar color="deep-purple darken-4">
+          <v-toolbar-title>{{ currentCity }} Planes</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="showCityPlanesDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text v-if="selectedCityPlanes.length > 0">
+          <v-row>
+            <v-col
+              cols="12"
+              sm="6"
+              md="4"
+              v-for="plane in selectedCityPlanes"
+              :key="plane._id"
+            >
+              <v-card
+                @click="showPlaneDetails(plane)"
+                color="deep-purple darken-3"
+                class="plane-card"
+              >
+                <v-img
+                  :src="getPlaneImageUrl(plane.planeImage)"
+                  height="150"
+                  contain
+                  class="plane-image"
+                ></v-img>
+                <v-card-title class="white--text text-subtitle-1">
+                  {{ plane.planeModel }}
+                </v-card-title>
+                <v-card-subtitle class="white--text">
+                  {{ plane.airline }}
+                </v-card-subtitle>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-text v-else class="text-center">
+          <v-alert type="info"
+            >No planes found for {{ currentCity }} airport.</v-alert
+          >
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -247,8 +251,8 @@ export default {
     showCities: false,
     showProfile: false,
     showAddPlane: false,
-    showAirlines: false,
     showPlaneDetailsDialog: false,
+    showCityPlanesDialog: false,
     currentImage: require("@/assets/hr.png"),
     cities: [
       "ZAGREB",
@@ -259,7 +263,6 @@ export default {
       "RIJEKA",
       "OSIJEK",
     ],
-    airlines: [],
     selectedCityPlanes: [],
     selectedPlane: null,
     currentCity: null,
@@ -274,9 +277,9 @@ export default {
       }
       this.currentImage = require("@/assets/hr.png");
       this.showCities = false;
-      this.showAirlines = false;
       this.selectedCityPlanes = [];
       this.currentCity = null;
+      this.showCityPlanesDialog = false;
     },
 
     handleAuth() {
@@ -292,7 +295,6 @@ export default {
 
     goToAirports() {
       this.showCities = !this.showCities;
-      this.showAirlines = false;
       this.selectedCityPlanes = [];
       this.currentCity = null;
     },
@@ -309,31 +311,18 @@ export default {
         OSIJEK: "Osijek.jpg",
       };
       this.currentImage = require(`@/assets/${cityImageMap[city]}`);
-
-      try {
-        // Dohvati aviokompanije
-        const airlinesResponse = await axios.get(
-          `http://localhost:3000/api/airlines/${city.toLowerCase()}`
-        );
-        this.airlines = airlinesResponse.data;
-        this.showAirlines = true;
-
-        // Dohvati sve avione za odabrani grad
-        await this.fetchPlanesForCity(city.toLowerCase());
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.airlines = [];
-        this.selectedCityPlanes = [];
-        this.showAirlines = false;
-      }
+      await this.fetchPlanesForCity(city.toLowerCase());
+      this.showCityPlanesDialog = true;
     },
 
     async fetchPlanesForCity(city) {
       try {
-        const planesResponse = await axios.get(
+        console.log(`Fetching planes for ${city}`); // Debug log
+        const response = await axios.get(
           `http://localhost:3000/api/planes/${city}`
         );
-        this.selectedCityPlanes = planesResponse.data;
+        console.log("Planes response:", response.data); // Debug log
+        this.selectedCityPlanes = response.data;
       } catch (error) {
         console.error("Error fetching planes:", error);
         this.selectedCityPlanes = [];
@@ -343,15 +332,6 @@ export default {
     async refreshPlanes() {
       if (this.currentCity) {
         await this.fetchPlanesForCity(this.currentCity.toLowerCase());
-      }
-    },
-
-    goToAirline(airline) {
-      const city = this.cities.find((c) =>
-        this.currentImage.includes(c.toLowerCase() + ".jpg")
-      );
-      if (city) {
-        this.$router.push(`/airport/${city.toLowerCase()}/${airline}`);
       }
     },
 
@@ -390,7 +370,9 @@ export default {
     getPlaneImageUrl(imagePath) {
       if (!imagePath) return require("@/assets/no-image.png");
       if (imagePath.startsWith("http")) return imagePath;
-      return `http://localhost:3000/${imagePath}`;
+      // Fix Windows path separator if needed
+      const normalizedPath = imagePath.replace(/\\/g, "/");
+      return `http://localhost:3000/${normalizedPath}`;
     },
 
     showPlaneDetails(plane) {
@@ -429,7 +411,7 @@ export default {
 }
 
 .white--text {
-  color: white;
+  color: white !important;
 }
 
 .fill-height {
@@ -446,5 +428,25 @@ export default {
 
 .ml-8 {
   margin-left: 32px;
+}
+
+.plane-card {
+  height: 100%;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.plane-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.plane-image {
+  background-color: #121212;
+}
+
+.text-subtitle-1 {
+  font-size: 1rem !important;
+  line-height: 1.5;
 }
 </style>

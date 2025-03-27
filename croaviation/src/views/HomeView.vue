@@ -1,16 +1,28 @@
 <template>
   <v-app>
     <!-- Gornja traka (App Bar) -->
-    <v-app-bar app color="black" dark>
-      <v-img
-        :src="require('../assets/CroLogo.png')"
-        contain
-        height="50"
-        class="ml-0"
-        @click="goToHome"
-        style="cursor: pointer; position: absolute; right: 1050px"
-      />
+    <v-app-bar app color="pink" dark class="px-0">
+      <!-- Logo on the left -->
+      <div style="height: 50px; display: flex; align-items: center">
+        <v-btn
+          @click="goToHome"
+          icon
+          class="ma-0 pa-0"
+          style="min-width: 0; width: 30%; height: 100%"
+        >
+          <v-img
+            :src="require('../assets/CroLogo.png')"
+            contain
+            height="50"
+            style="cursor: pointer; margin-left: 0"
+          />
+        </v-btn>
+      </div>
+
+      <!-- This will push everything after it to the right -->
       <v-spacer></v-spacer>
+
+      <!-- Login/Logout button on the right -->
       <v-btn text @click="handleAuth">
         <v-icon left>{{
           isLoggedIn ? "mdi-account-circle" : "mdi-login"
@@ -406,6 +418,15 @@ export default {
 </script>
 
 <style scoped>
+/* Add this to your existing styles */
+.v-app-bar {
+  padding-left: 0 !important;
+}
+
+.v-toolbar__content {
+  padding-left: 0 !important;
+}
+
 .bg-black {
   background-color: black;
 }

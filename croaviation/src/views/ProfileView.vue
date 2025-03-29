@@ -74,7 +74,7 @@ export default {
       if (!imagePath || imagePath.startsWith("http")) {
         return imagePath || require("@/assets/EmptyProfile.png");
       }
-      return `http://localhost:3000/${imagePath}`;
+      return `${process.env.VUE_APP_API_BASE_URL}/${imagePath}`; // OVO TREBA PROMIJENITI
     },
 
     // Metoda za upload profilne slike

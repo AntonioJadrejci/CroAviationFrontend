@@ -384,7 +384,7 @@ export default {
       if (imagePath.startsWith("http")) return imagePath;
       // Fix Windows path separator if needed
       const normalizedPath = imagePath.replace(/\\/g, "/");
-      return `http://localhost:3000/${normalizedPath}`;
+      return `${process.env.VUE_APP_API_BASE_URL}/${normalizedPath}`; // OVO TREBA PROMIJENITI
     },
 
     showPlaneDetails(plane) {

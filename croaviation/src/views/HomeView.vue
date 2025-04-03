@@ -380,13 +380,24 @@ export default {
     },
 
     getPlaneImageUrl(imagePath) {
+      // Ako nema slike, vrati default
       if (!imagePath) return require("@/assets/no-image.png");
+
+      // Ako je već puni URL (npr. ako koristite eksterne slike)
       if (imagePath.startsWith("http")) return imagePath;
-      // Koristite konzistentno process.env.VUE_APP_API_BASE_URL
-      return `${process.env.VUE_APP_API_BASE_URL}${imagePath.replace(
-        /^uploads[\\/]/,
-        ""
-      )}`;
+
+      // Za development
+      if (process.env.NODE_ENV === "development") {
+        return `${process.env.VUE_APP_API_BASE_URL}${imagePath.replace(
+          /^.*[\\/]uploads[\\/]/,
+          ""
+        )}`;
+      }
+
+      // Za produkciju
+      return `${process.env.VUE_APP_API_BASE_URL}uploads/${imagePath
+        .split(/[\\/]/)
+        .pop()}`;
     },
 
     showPlaneDetails(plane) {

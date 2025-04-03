@@ -331,7 +331,7 @@ export default {
       try {
         console.log(`Fetching planes for ${city}`); // Debug log
         const response = await axios.get(
-          `http://localhost:3000/api/planes/${city}`
+          `${process.env.VUE_APP_API_BASE_URL}api/planes/${city}`
         );
         console.log("Planes response:", response.data); // Debug log
         this.selectedCityPlanes = response.data;
@@ -369,7 +369,7 @@ export default {
 
     async checkTokenValidity() {
       try {
-        await axios.get("http://localhost:3000/api/profile");
+        await axios.get("`${process.env.VUE_APP_API_BASE_URL}api/profile");
       } catch (error) {
         if (error.response && error.response.status === 403) {
           localStorage.removeItem("authToken");
@@ -384,7 +384,7 @@ export default {
       if (imagePath.startsWith("http")) return imagePath;
       // Fix Windows path separator if needed
       const normalizedPath = imagePath.replace(/\\/g, "/");
-      return `${process.env.VUE_APP_API_BASE_URL}/${normalizedPath}`; // OVO TREBA PROMIJENITI
+      return `${process.env.VUE_APP_API_BASE_URL}${normalizedPath}`; // OVO TREBA PROMIJENITI
     },
 
     showPlaneDetails(plane) {
@@ -401,7 +401,9 @@ export default {
 
   async mounted() {
     try {
-      const response = await axios.get("http://localhost:3000/api/health");
+      const response = await axios.get(
+        `${process.env.VUE_APP_API_BASE_URL}api/health`
+      );
       this.message = response.data.status;
     } catch (error) {
       console.error("Došlo je do greške pri dohvatu podataka:", error);

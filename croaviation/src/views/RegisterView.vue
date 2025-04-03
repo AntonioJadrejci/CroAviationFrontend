@@ -63,7 +63,7 @@ export default {
     async register() {
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/register",
+          `${process.env.VUE_APP_API_BASE_URL}api/register`,
           {
             username: this.username,
             email: this.email,

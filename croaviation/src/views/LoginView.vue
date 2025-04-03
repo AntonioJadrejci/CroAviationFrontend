@@ -51,10 +51,13 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post("http://localhost:3000/api/login", {
-          email: this.email,
-          password: this.password,
-        });
+        const response = await axios.post(
+          `${process.env.VUE_APP_API_BASE_URL}api/login`,
+          {
+            email: this.email,
+            password: this.password,
+          }
+        );
 
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("refreshToken", response.data.refreshToken);

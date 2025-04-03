@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify'
 import axios from 'axios'
 
 // Axios configuration
-axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000/api'
+axios.defaults.baseURL = `${process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'}/api`
 
 // Request interceptor for adding token
 axios.interceptors.request.use(config => {
@@ -36,7 +36,7 @@ axios.interceptors.response.use(response => response, async error => {
       const refreshToken = localStorage.getItem('refreshToken')
       if (!refreshToken) throw error
 
-      const response = await axios.post('/refresh-token', { token: refreshToken })
+      const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'}/api/refresh-token`, { token: refreshToken })
       const newToken = response.data.token
 
       localStorage.setItem('authToken', newToken)

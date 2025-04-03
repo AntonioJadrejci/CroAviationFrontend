@@ -54,11 +54,14 @@ export default {
     const token = localStorage.getItem("authToken");
     if (token) {
       try {
-        const response = await axios.get("http://localhost:3000/api/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}api/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         this.username = response.data.username;
         this.profileImage =
           response.data.profileImage || require("@/assets/EmptyProfile.png");
@@ -74,7 +77,7 @@ export default {
       if (!imagePath || imagePath.startsWith("http")) {
         return imagePath || require("@/assets/EmptyProfile.png");
       }
-      return `${process.env.VUE_APP_API_BASE_URL}/${imagePath}`; // OVO TREBA PROMIJENITI
+      return `${process.env.VUE_APP_API_BASE_URL}/${imagePath}`;
     },
 
     // Metoda za upload profilne slike
@@ -85,7 +88,7 @@ export default {
       const token = localStorage.getItem("authToken");
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/upload-profile-image",
+          `${process.env.VUE_APP_API_BASE_URL}api/upload-profile-image`,
           formData,
           {
             headers: {
@@ -106,11 +109,14 @@ export default {
       const token = localStorage.getItem("authToken");
       if (token) {
         try {
-          await axios.delete("http://localhost:3000/api/delete-account", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          await axios.delete(
+            `${process.env.VUE_APP_API_BASE_URL}api/delete-account`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
           // Ukloni token i preusmjeri korisnika na početnu stranicu
           localStorage.removeItem("authToken");
           this.$emit("close-profile");

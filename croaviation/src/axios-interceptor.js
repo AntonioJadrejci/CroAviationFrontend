@@ -3,7 +3,7 @@ import axios from 'axios';
 import router from './router';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: `${process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'}/api`,
 });
 
 // Request interceptor
@@ -31,7 +31,7 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
-        const response = await axios.post('http://localhost:3000/api/refresh-token', {
+        const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'}/api/refresh-token`, {
           token: refreshToken
         });
 

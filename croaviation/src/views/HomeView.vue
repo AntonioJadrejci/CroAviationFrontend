@@ -369,7 +369,7 @@ export default {
 
     async checkTokenValidity() {
       try {
-        await axios.get("`${process.env.VUE_APP_API_BASE_URL}api/profile");
+        await axios.get(`${process.env.VUE_APP_API_BASE_URL}api/profile`);
       } catch (error) {
         if (error.response && error.response.status === 403) {
           localStorage.removeItem("authToken");

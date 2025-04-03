@@ -79,7 +79,7 @@ export default {
       if (imagePath.startsWith("http")) return imagePath;
       // Fix Windows path separator if needed
       const normalizedPath = imagePath.replace(/\\/g, "/");
-      return `${process.env.VUE_APP_API_BASE_URL}/${normalizedPath.replace(
+      return `${process.env.VUE_APP_API_BASE_URL}${normalizedPath.replace(
         /^uploads\//,
         ""
       )}`;

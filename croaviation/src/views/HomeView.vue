@@ -382,9 +382,11 @@ export default {
     getPlaneImageUrl(imagePath) {
       if (!imagePath) return require("@/assets/no-image.png");
       if (imagePath.startsWith("http")) return imagePath;
-      // Fix Windows path separator if needed
-      const normalizedPath = imagePath.replace(/\\/g, "/");
-      return `${process.env.VUE_APP_API_BASE_URL}${normalizedPath}`; // OVO TREBA PROMIJENITI
+      // Koristite konzistentno process.env.VUE_APP_API_BASE_URL
+      return `${process.env.VUE_APP_API_BASE_URL}${imagePath.replace(
+        /^uploads[\\/]/,
+        ""
+      )}`;
     },
 
     showPlaneDetails(plane) {

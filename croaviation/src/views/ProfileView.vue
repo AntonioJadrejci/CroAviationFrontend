@@ -74,10 +74,13 @@ export default {
   methods: {
     // Metoda za generiranje punog URL-a za profilnu sliku
     getProfileImageUrl(imagePath) {
-      if (!imagePath || imagePath.startsWith("http")) {
-        return imagePath || require("@/assets/EmptyProfile.png");
-      }
-      return `${process.env.VUE_APP_API_BASE_URL}/${imagePath}`;
+      if (!imagePath) return require("@/assets/EmptyProfile.png");
+      if (imagePath.startsWith("http")) return imagePath;
+      // Uklonite dodatni slash nakon BASE_URL
+      return `${process.env.VUE_APP_API_BASE_URL}${imagePath.replace(
+        /^uploads[\\/]/,
+        ""
+      )}`;
     },
 
     // Metoda za upload profilne slike

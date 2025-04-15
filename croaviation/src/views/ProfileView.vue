@@ -74,24 +74,13 @@ export default {
   methods: {
     // Metoda za generiranje punog URL-a za profilnu sliku
     getProfileImageUrl(imagePath) {
-      // Ako nema slike, vrati default
       if (!imagePath) return require("@/assets/EmptyProfile.png");
-
-      // Ako je već puni URL
       if (imagePath.startsWith("http")) return imagePath;
-
-      // Za development
-      if (process.env.NODE_ENV === "development") {
-        return `${process.env.VUE_APP_API_BASE_URL}${imagePath.replace(
-          /^.*[\\/]uploads[\\/]/,
-          ""
-        )}`;
-      }
-
-      // Za produkciju
-      return `${process.env.VUE_APP_API_BASE_URL}uploads/${imagePath
-        .split(/[\\/]/)
-        .pop()}`;
+      // Uklonite dodatni slash nakon BASE_URL
+      return `${process.env.VUE_APP_API_BASE_URL}${imagePath.replace(
+        /^uploads[\\/]/,
+        ""
+      )}`;
     },
 
     // Metoda za upload profilne slike

@@ -170,21 +170,30 @@ export default {
         formData.append("departureDate", this.departureDate);
 
         if (this.planeImage) {
-          formData.append("planeImage", this.planeImage);
+          // Dodajemo sliku sa originalnim imenom i ekstenzijom
+          const fileName = `${Date.now()}-${this.planeImage.name.replace(
+            /\s+/g,
+            "-"
+          )}`;
+          formData.append("planeImage", this.planeImage, fileName);
         }
 
         const token = localStorage.getItem("authToken");
-        await axios.post("/api/add-plane", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const response = await axios.post(
+          `${process.env.VUE_APP_API_BASE_URL}api/add-plane`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
         this.successMessage = "Plane added successfully!";
         setTimeout(() => {
           this.$emit("close-add-plane");
-          this.$emit("plane-added");
+          this.$emit("plane-added", response.data); // Možete proslijediti podatke o novom avionu
         }, 1500);
       } catch (error) {
         console.error("Error adding plane:", error);

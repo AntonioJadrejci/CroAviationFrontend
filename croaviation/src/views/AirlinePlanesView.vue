@@ -74,11 +74,13 @@ export default {
     this.planes = response.data;
   },
   methods: {
-    getPlaneImageUrl(imagePath) {
-      if (!imagePath) return require("@/assets/no-image.png");
-      if (imagePath.startsWith("http")) return imagePath;
-      return `${process.env.VUE_APP_API_BASE_URL}${imagePath}`;
-    },
+   getPlaneImageUrl(imagePath) {
+  if (!imagePath) return require("@/assets/no-image.png");
+  if (imagePath.startsWith("http")) return imagePath;
+  // Remove any leading slashes that might cause double slashes in URL
+  const cleanPath = imagePath.replace(/^\//, '');
+  return `${process.env.VUE_APP_API_BASE_URL}${cleanPath}`;
+},
     formatDate(dateString) {
       if (!dateString) return "N/A";
       const date = new Date(dateString);

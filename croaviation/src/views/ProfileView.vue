@@ -76,11 +76,7 @@ export default {
     getProfileImageUrl(imagePath) {
       if (!imagePath) return require("@/assets/EmptyProfile.png");
       if (imagePath.startsWith("http")) return imagePath;
-      // Uklonite dodatni slash nakon BASE_URL
-      return `${process.env.VUE_APP_API_BASE_URL}${imagePath.replace(
-        /^uploads[\\/]/,
-        ""
-      )}`;
+      return `${process.env.VUE_APP_API_BASE_URL}${imagePath}`;
     },
 
     // Metoda za upload profilne slike

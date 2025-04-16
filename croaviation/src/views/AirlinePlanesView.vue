@@ -77,22 +77,7 @@ export default {
     getPlaneImageUrl(imagePath) {
       if (!imagePath) return require("@/assets/no-image.png");
       if (imagePath.startsWith("http")) return imagePath;
-
-      // Normaliziraj putanju za sve okoline
-      const normalizedPath = imagePath.replace(/\\/g, "/");
-
-      // Razdvoji development i produkciju
-      if (process.env.NODE_ENV === "development") {
-        return `${process.env.VUE_APP_API_BASE_URL}${normalizedPath.replace(
-          /^.*uploads\//,
-          ""
-        )}`;
-      }
-
-      // Produkcija - koristi samo ime datoteke
-      return `${process.env.VUE_APP_API_BASE_URL}uploads/${normalizedPath
-        .split("/")
-        .pop()}`;
+      return `${process.env.VUE_APP_API_BASE_URL}${imagePath}`;
     },
     formatDate(dateString) {
       if (!dateString) return "N/A";

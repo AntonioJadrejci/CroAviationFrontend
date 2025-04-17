@@ -413,7 +413,7 @@ export default {
     const token = localStorage.getItem("authToken");
     if (token) {
       this.isLoggedIn = true;
-      this.checkTokenValidity();
+      await this.checkTokenValidity(); // Dodajte await ovdje
     }
   },
 };

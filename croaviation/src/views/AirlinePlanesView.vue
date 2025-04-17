@@ -74,13 +74,17 @@ export default {
     this.planes = response.data;
   },
   methods: {
-   getPlaneImageUrl(imagePath) {
-  if (!imagePath) return require("@/assets/no-image.png");
-  if (imagePath.startsWith("http")) return imagePath;
-  // Remove any leading slashes that might cause double slashes in URL
-  const cleanPath = imagePath.replace(/^\//, '');
-  return `${process.env.VUE_APP_API_BASE_URL}${cleanPath}`;
-},
+    getPlaneImageUrl(imagePath) {
+      if (!imagePath) return require("@/assets/no-image.png");
+      if (imagePath.startsWith("http")) return imagePath;
+
+      // Ako putanja već počinje s 'uploads', ne dodajemo još jedan put
+      const cleanPath = imagePath.startsWith("uploads/")
+        ? imagePath
+        : `uploads/${imagePath}`;
+
+      return `${process.env.VUE_APP_API_BASE_URL}${cleanPath}`;
+    },
     formatDate(dateString) {
       if (!dateString) return "N/A";
       const date = new Date(dateString);

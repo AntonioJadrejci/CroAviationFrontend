@@ -52,12 +52,13 @@ axios.interceptors.response.use(response => response, async error => {
     }
   }
 
-  // If 403 error (unauthorized)
-  if (error.response.status === 403) {
-    router.push('/?error=unauthorized')
+  // Ako je 403 (unauthorized) ili 404 (not found)
+  if ([403, 404].includes(error.response.status)) {
+    // Ne redirectajte automatski, samo odbijte promise
+    return Promise.reject(error);
   }
 
-  return Promise.reject(error)
+  return Promise.reject(error);
 })
 
 // Set axios as global Vue property

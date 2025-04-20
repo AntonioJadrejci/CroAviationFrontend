@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify'
 import axios from 'axios'
 
 // Axios configuration
-axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL;
+axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000';
 
 // Request interceptor for adding token
 axios.interceptors.request.use(config => {

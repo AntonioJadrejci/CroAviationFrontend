@@ -401,19 +401,35 @@ export default {
 
   async mounted() {
     try {
-      const response = await axios.get(
-        `${process.env.VUE_APP_API_BASE_URL}api/health`
-      );
+      // Dodajte kosu crtu između BASE_URL i 'api/health' kako biste osigurali ispravan URL
+      const apiUrl = `${process.env.VUE_APP_API_BASE_URL}${
+        process.env.VUE_APP_API_BASE_URL.endsWith("/") ? "" : "/"
+      }api/health`;
+
+      console.log("Pozivam API na:", apiUrl); // Debug logging
+
+      const response = await axios.get(apiUrl);
       this.message = response.data.status;
     } catch (error) {
       console.error("Došlo je do greške pri dohvatu podataka:", error);
       this.message = "Greška pri dohvatu podataka s backenda.";
+
+      // Dodatna provjera za specifične greške
+      if (error.response) {
+        console.error("Status:", error.response.status);
+        console.error("Podaci:", error.response.data);
+      } else if (error.request) {
+        console.error(
+          "Zahtjev je napravljen ali nema odgovora:",
+          error.request
+        );
+      }
     }
 
     const token = localStorage.getItem("authToken");
     if (token) {
       this.isLoggedIn = true;
-      await this.checkTokenValidity(); // Dodajte await ovdje
+      await this.checkTokenValidity();
     }
   },
 };

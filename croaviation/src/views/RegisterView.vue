@@ -7,7 +7,7 @@
   >
     <v-card>
       <v-toolbar color="deep-purple darken-4" dark flat>
-        <v-toolbar-title>Registracija</v-toolbar-title>
+        <v-toolbar-title>Register</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon @click="closeRegister">
           <v-icon>mdi-close</v-icon>

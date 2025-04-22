@@ -2,7 +2,7 @@
   <v-dialog :value="showLogin" max-width="600" persistent @input="closeLogin">
     <v-card>
       <v-toolbar color="deep-purple darken-4" dark flat>
-        <v-toolbar-title>Prijava</v-toolbar-title>
+        <v-toolbar-title>Log in</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon @click="closeLogin">
           <v-icon>mdi-close</v-icon>

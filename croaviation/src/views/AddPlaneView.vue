@@ -12,28 +12,28 @@
         <v-select
           v-model="selectedAirport"
           :items="airports"
-          label="Zračna luka"
+          label="Airport"
           required
           :rules="[(v) => !!v || 'Zračna luka je obavezna']"
         ></v-select>
 
         <v-text-field
           v-model="planeModel"
-          label="Model aviona"
+          label="Plane Model"
           required
           :rules="[(v) => !!v || 'Model aviona je obavezan']"
         ></v-text-field>
 
         <v-text-field
           v-model="airline"
-          label="Aviokompanija"
+          label="Airline"
           required
           :rules="[(v) => !!v || 'Aviokompanija je obavezna']"
         ></v-text-field>
 
         <v-text-field
           v-model="registration"
-          label="Registracija aviona"
+          label="Aircraft Registration"
           required
           :rules="[(v) => !!v || 'Registracija je obavezna']"
         ></v-text-field>
@@ -49,7 +49,7 @@
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               v-model="arrivalDate"
-              label="Datum dolaska"
+              label="Arrival Date"
               prepend-icon="mdi-calendar"
               readonly
               v-bind="attrs"
@@ -76,7 +76,7 @@
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               v-model="departureDate"
-              label="Datum odlaska"
+              label="Departure Date"
               prepend-icon="mdi-calendar"
               readonly
               v-bind="attrs"
@@ -94,7 +94,7 @@
 
         <v-file-input
           v-model="planeImage"
-          label="Slika aviona"
+          label="Plane Image"
           accept="image/*"
           prepend-icon="mdi-camera"
           :rules="[

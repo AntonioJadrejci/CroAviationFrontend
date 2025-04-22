@@ -17,7 +17,7 @@
         <v-form @submit.prevent="register">
           <v-text-field
             v-model="username"
-            label="Korisničko ime"
+            label="Username"
             required
           ></v-text-field>
           <v-text-field
@@ -28,7 +28,7 @@
           ></v-text-field>
           <v-text-field
             v-model="password"
-            label="Lozinka"
+            label="Pasword"
             type="password"
             required
           ></v-text-field>
@@ -39,7 +39,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn text @click="goToLogin">Prijavi se</v-btn>
+        <v-btn text @click="goToLogin">Log in</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -18,18 +18,18 @@
           ></v-text-field>
           <v-text-field
             v-model="password"
-            label="Lozinka"
+            label="Pasword"
             type="password"
             required
           ></v-text-field>
           <v-btn type="submit" color="deep-purple darken-4" block dark>
-            Prijavi se
+            Log in
           </v-btn>
         </v-form>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn text @click="goToRegister">Registriraj se</v-btn>
+        <v-btn text @click="goToRegister">Register</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

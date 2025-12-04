@@ -14,28 +14,28 @@
           :items="airports"
           label="Airport"
           required
-          :rules="[(v) => !!v || 'Zračna luka je obavezna']"
+          :rules="[(v) => !!v || 'Airport input is necessary!']"
         ></v-select>
 
         <v-text-field
           v-model="planeModel"
           label="Plane Model"
           required
-          :rules="[(v) => !!v || 'Model aviona je obavezan']"
+          :rules="[(v) => !!v || 'Plane model input is necessary!']"
         ></v-text-field>
 
         <v-text-field
           v-model="airline"
           label="Airline"
           required
-          :rules="[(v) => !!v || 'Aviokompanija je obavezna']"
+          :rules="[(v) => !!v || 'Airline input is necessary!']"
         ></v-text-field>
 
         <v-text-field
           v-model="registration"
           label="Aircraft Registration"
           required
-          :rules="[(v) => !!v || 'Registracija je obavezna']"
+          :rules="[(v) => !!v || 'Aircraft registration input is necessary!']"
         ></v-text-field>
 
         <v-menu
@@ -54,7 +54,7 @@
               readonly
               v-bind="attrs"
               v-on="on"
-              :rules="[(v) => !!v || 'Datum dolaska je obavezan']"
+              :rules="[(v) => !!v || 'Arrival date input is necessary!']"
             ></v-text-field>
           </template>
           <v-date-picker
@@ -81,7 +81,7 @@
               readonly
               v-bind="attrs"
               v-on="on"
-              :rules="[(v) => !!v || 'Datum odlaska je obavezan']"
+              :rules="[(v) => !!v || 'Departure date input is necessary!']"
             ></v-text-field>
           </template>
           <v-date-picker
@@ -98,8 +98,8 @@
           accept="image/*"
           prepend-icon="mdi-camera"
           :rules="[
-            (v) => !!v || 'Slika je obavezna',
-            (v) => !v || v.size < 2000000 || 'Slika mora biti manja od 2 MB',
+            (v) => !!v || 'Image is necessary!'
+           
           ]"
         ></v-file-input>
 

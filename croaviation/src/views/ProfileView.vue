@@ -8,18 +8,18 @@
       </v-btn>
     </v-toolbar>
     <v-card-text class="text-center">
-      <!-- Profilna slika (kružnog oblika) -->
+      
       <v-avatar size="150" class="mb-4">
         <v-img :src="getProfileImageUrl(profileImage)" />
       </v-avatar>
 
-      <!-- Ime korisnika -->
+      
       <h1 class="mt-4">{{ username }}</h1>
 
-      <!-- Broj objavljenih aviona -->
+      
       <p>Number of Planes Posted: {{ numberOfPlanes }}</p>
 
-      <!-- Upload profilne slike -->
+      
       <v-file-input
         v-model="newProfileImage"
         label="Upload Profile Image"
@@ -28,7 +28,7 @@
       ></v-file-input>
       <v-btn color="primary" @click="uploadImage">Upload</v-btn>
 
-      <!-- Brisanje računa -->
+      
       <v-btn color="error" @click="deleteAccount" class="mt-4">
         Delete Your Account
       </v-btn>
@@ -43,14 +43,14 @@ export default {
   name: "ProfileView",
   data() {
     return {
-      username: "", // Ime korisnika
-      profileImage: "", // Trenutna profilna slika
-      numberOfPlanes: 0, // Broj objavljenih aviona
-      newProfileImage: null, // Nova slika za upload
+      username: "", 
+      profileImage: "", 
+      numberOfPlanes: 0, 
+      newProfileImage: null, 
     };
   },
   async mounted() {
-    // Dohvati podatke korisnika prilikom učitavanja komponente
+    
     const token = localStorage.getItem("authToken");
     if (token) {
       try {
@@ -72,14 +72,14 @@ export default {
     }
   },
   methods: {
-    // Metoda za generiranje punog URL-a za profilnu sliku
+    
     getProfileImageUrl(imagePath) {
       if (!imagePath) return require("@/assets/EmptyProfile.png");
       if (imagePath.startsWith("http")) return imagePath;
       return `${process.env.VUE_APP_API_BASE_URL}${imagePath}`;
     },
 
-    // Metoda za upload profilne slike
+    
     async uploadImage() {
       const formData = new FormData();
       formData.append("profileImage", this.newProfileImage);
@@ -96,14 +96,14 @@ export default {
             },
           }
         );
-        // Ažuriraj profilnu sliku nakon uspješnog uploada
+        
         this.profileImage = response.data.profileImage;
       } catch (error) {
         console.error("Error uploading profile image:", error);
       }
     },
 
-    // Metoda za brisanje računa
+    
     async deleteAccount() {
       const token = localStorage.getItem("authToken");
       if (token) {
@@ -116,7 +116,7 @@ export default {
               },
             }
           );
-          // Ukloni token i preusmjeri korisnika na početnu stranicu
+          
           localStorage.removeItem("authToken");
           this.$emit("close-profile");
           this.$router.push("/");
@@ -126,7 +126,7 @@ export default {
       }
     },
 
-    // Metoda za zatvaranje prozora profila
+    
     closeProfile() {
       this.$emit("close-profile");
     },
@@ -135,7 +135,7 @@ export default {
 </script>
 
 <style scoped>
-/* Dodatni stilovi ako su potrebni */
+
 .text-center {
   text-align: center;
 }

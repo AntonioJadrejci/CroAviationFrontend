@@ -1,4 +1,4 @@
-// src/axios-interceptor.js
+
 import axios from 'axios';
 import router from './router';
 
@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: `${process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'}/api`,
 });
 
-// Request interceptor
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');
@@ -20,7 +20,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -39,7 +39,7 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${response.data.token}`;
         return api(originalRequest);
       } catch (err) {
-        // If refresh fails, log out the user
+
         localStorage.removeItem('authToken');
         localStorage.removeItem('refreshToken');
         router.push('/');

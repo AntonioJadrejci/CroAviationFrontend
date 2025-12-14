@@ -170,7 +170,7 @@ export default {
         formData.append("departureDate", this.departureDate);
 
         if (this.planeImage) {
-          // Dodajemo sliku sa originalnim imenom i ekstenzijom
+          
           const fileName = `${Date.now()}-${this.planeImage.name.replace(
             /\s+/g,
             "-"
@@ -193,7 +193,7 @@ export default {
         this.successMessage = "Plane added successfully!";
         setTimeout(() => {
           this.$emit("close-add-plane");
-          this.$emit("plane-added", response.data); // Možete proslijediti podatke o novom avionu
+          this.$emit("plane-added", response.data); 
         }, 1500);
       } catch (error) {
         console.error("Error adding plane:", error);

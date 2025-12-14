@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <!-- Gornja traka (App Bar) -->
+    
     <v-app-bar app color="pink" dark class="px-0">
-      <!-- Logo on the left -->
+      
       <div style="height: 50px; display: flex; align-items: center">
         <v-btn
           @click="goToHome"
@@ -19,10 +19,10 @@
         </v-btn>
       </div>
 
-      <!-- This will push everything after it to the right -->
+      
       <v-spacer></v-spacer>
 
-      <!-- Login/Logout button on the right -->
+      
       <v-btn text @click="handleAuth">
         <v-icon left>{{
           isLoggedIn ? "mdi-account-circle" : "mdi-login"
@@ -31,10 +31,10 @@
       </v-btn>
     </v-app-bar>
 
-    <!-- Glavni sadržaj -->
+    
     <v-container fluid class="bg-black fill-height">
       <v-row align="center" justify="center" class="fill-height">
-        <!-- Lijeva polovica (sadržaj) -->
+        
         <v-col cols="12" md="6" class="text-center">
           <v-btn
             color="deep-purple darken-4"
@@ -105,7 +105,7 @@
       </v-row>
     </v-container>
 
-    <!-- ABOUT dialog -->
+    
     <v-dialog v-model="showAbout" max-width="600">
       <v-card>
         <v-card-title class="headline">About CroAviation</v-card-title>
@@ -125,7 +125,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- Login dialog -->
+   
     <LoginView
       :showLogin="showLogin"
       @close-login="showLogin = false"
@@ -133,7 +133,7 @@
       @go-to-register="showRegister = true"
     />
 
-    <!-- Register dialog -->
+    
     <RegisterView
       :showRegister="showRegister"
       @close-register="showRegister = false"
@@ -141,12 +141,12 @@
       @go-to-login="showLogin = true"
     />
 
-    <!-- Profile dialog -->
+    
     <v-dialog v-model="showProfile" max-width="600" persistent>
       <ProfileView @close-profile="showProfile = false" />
     </v-dialog>
 
-    <!-- Add Plane dialog -->
+    
     <v-dialog v-model="showAddPlane" max-width="800" persistent>
       <AddPlaneView
         @close-add-plane="showAddPlane = false"
@@ -154,7 +154,7 @@
       />
     </v-dialog>
 
-    <!-- Plane Details dialog -->
+    
     <v-dialog v-model="showPlaneDetailsDialog" max-width="600">
       <v-card v-if="selectedPlane">
         <v-img
@@ -184,7 +184,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- City Planes Dialog -->
+    
     <v-dialog
       v-model="showCityPlanesDialog"
       max-width="800"
@@ -336,11 +336,11 @@ export default {
 
     async fetchPlanesForCity(city) {
       try {
-        console.log(`Fetching planes for ${city}`); // Debug log
+        console.log(`Fetching planes for ${city}`); 
         const response = await axios.get(
           `${process.env.VUE_APP_API_BASE_URL}api/planes/${city}`
         );
-        console.log("Planes response:", response.data); // Debug log
+        console.log("Planes response:", response.data); 
         this.selectedCityPlanes = response.data;
       } catch (error) {
         console.error("Error fetching planes:", error);
@@ -389,7 +389,7 @@ export default {
     getPlaneImageUrl(imagePath) {
       if (!imagePath) return require("@/assets/no-image.png");
       if (imagePath.startsWith("http")) return imagePath;
-      // Remove any leading slashes that might cause double slashes in URL
+      
       const cleanPath = imagePath.replace(/^\//, "");
       return `${process.env.VUE_APP_API_BASE_URL}${cleanPath}`;
     },
@@ -411,7 +411,7 @@ export default {
 </script>
 
 <style scoped>
-/* Add this to your existing styles */
+
 .v-app-bar {
   padding-left: 0 !important;
 }

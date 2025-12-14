@@ -13,7 +13,7 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: HomeView, // Koristite HomeView umjesto HelloWorld
+    component: HomeView,
   },
 
   {
